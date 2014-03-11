@@ -70,7 +70,7 @@ class volumePedal:
 		self.getMidi = Midictl(ctlnumber=self.ctlnumber, minscale=0, maxscale=127, init=0, channel=0, mul=1, add=0)
 		self.getMidi.setInterpolation(0)
 		
-		self.scaleMidi = Scale(input=self.getMidi, inmin=0, inmax=127, outmin=-0.001, outmax=1, exp=self.exp, mul=1, add=0)
+		self.scaleMidi = Scale(input=self.getMidi, inmin=0, inmax=127, outmin=-0.01, outmax=1, exp=self.exp, mul=1, add=0)
 		
 		self.smooth = Port(input=self.scaleMidi, risetime=0.005, falltime=0.005, init=0, mul=1, add=0)
 		
@@ -104,7 +104,6 @@ class volumePedal:
 	def midiLearn(self):
 		self.midiScan.play()
 
-	
 	def setMidiCtlNumber(self, ctlnumber):
 		self.getMidi.setCtlNumber(ctlnumber)
 		self.frame.setMidiCtlNumber(ctlnumber)
@@ -116,7 +115,7 @@ class volumePedal:
 class volumePedalFrame(wx.Frame):
 	def __init__(self, parent=None, title='Volume Pedal', pos=(100,100), size=(100,460), volumePedal=None):
 		self.volumePedal = volumePedal
-		self.app = wx.PySimpleApp()
+		self.app = wx.App()
 		wx.Frame.__init__(self, parent, id=wx.ID_ANY, title=title, pos=pos, size=size)
 		
 		self.panel = wx.Panel(self)
@@ -130,9 +129,12 @@ class volumePedalFrame(wx.Frame):
 			self.setCtlNumber.SetLabel("%.0f" %self.volumePedal.getMidi.ctlnumber)
 		
 		self.setCtlNumber.Bind(wx.EVT_BUTTON, self.midiLearn)
-
+		
 
 	def setValue(self,value):
+		wx.CallAfter(self.deferSetValue, value)
+		
+	def deferSetValue(self,value):
 		self.gauge.SetValue(round(value*1000))
 
 		
@@ -163,5 +165,5 @@ vp = volumePedal(ctlnumber=ctlnumber,stereo=stereo).get()
 vp.ctrl()
 vp.out()
 
-mainapp = wx.PySimpleApp()
-mainapp.MainLoop()
+
+vp.frame.app.MainLoop()
