@@ -9,7 +9,7 @@ Released under GNU/GPL License (http://www.gnu.org/)
 #Imports
 
 from pyo import *
-import wx, time, sys, getopt
+import wx, sys, getopt
 
 #Arguments handling
 
