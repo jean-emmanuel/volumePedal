@@ -53,9 +53,6 @@ def main(argv):
 		for i in range(len(devices[1])):
 			print " [ %d ] >>> %s " % (devices[1][i], devices[0][i])
 		sys.exit()
-if __name__ == "__main__":
-	main(sys.argv[1:])
-
 
 #Volume Pedal Classes
 
@@ -97,7 +94,7 @@ class volumePedal:
 		self.frame.Show()
 		
 	def setFrameValue(self):
-		value = self.volume.get()
+		value = max(0,self.scaleMidi.get())
 		self.frame.setValue(value)
 		#print value #debug
 		
@@ -111,7 +108,7 @@ class volumePedal:
 		
 	def cancelMidiLearn(self):
 		self.midiScan.stop()
-		
+
 class volumePedalFrame(wx.Frame):
 	def __init__(self, parent=None, title='Volume Pedal', pos=(100,100), size=(100,460), volumePedal=None):
 		self.volumePedal = volumePedal
@@ -150,20 +147,22 @@ class volumePedalFrame(wx.Frame):
 		self.setCtlNumber.SetLabel("%.0f" %ctlnumber)
 
 
-#Server Init
+if __name__ == "__main__":
+	main(sys.argv[1:])
 
-s = Server(nchnls=stereo+1, audio='jack', jackname='Volume Pedal')
-s.setJackAuto(xin=False, xout=False)
+	#Server Init
 
-s.setMidiInputDevice(mididevice)
-s.boot()
-s.start()
+	s = Server(nchnls=stereo+1, audio='jack', jackname='Volume Pedal')
+	s.setJackAuto(xin=False, xout=False)
 
-#Volume Pedal Init
+	s.setMidiInputDevice(mididevice)
+	s.boot()
+	s.start()
 
-vp = volumePedal(ctlnumber=ctlnumber,stereo=stereo).get()
-vp.ctrl()
-vp.out()
+	#Volume Pedal Init
 
+	vp = volumePedal(ctlnumber=ctlnumber,stereo=stereo).get()
+	vp.ctrl()
+	vp.out()
 
-vp.frame.app.MainLoop()
+	vp.frame.app.MainLoop()
