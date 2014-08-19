@@ -3,7 +3,7 @@ volumePedal
 
 Midi volume pedal with midi learn function.
 
-Copyleft Jean-Emmanuel Doucet, released under GNU/GPL License (http://www.gnu.org/)
+Released under GNU/GPL License v3 (http://www.gnu.org/)
 
 Usage : python volumePedal.py [OPTIONS]
 
